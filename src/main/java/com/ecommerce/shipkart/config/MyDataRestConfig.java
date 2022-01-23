@@ -21,12 +21,12 @@ import com.ecommerce.shipkart.entity.ProductCategory;
 public class MyDataRestConfig implements RepositoryRestConfigurer {
 
 	private EntityManager entityManager;
-	
+
 	@Autowired
 	public MyDataRestConfig(EntityManager theEntityManager) {
-		entityManager=theEntityManager;
+		entityManager = theEntityManager;
 	}
-	
+
 	@Override
 	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
 
@@ -48,15 +48,24 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 
 	private void exposeIds(RepositoryRestConfiguration config) {
 		// expose entity ids
-		
-		//get a list of all entity classes from entity manager
-		
-		Set<EntityType<?>> entities=entityManager.getMetamodel().getEntities();
-		
-		//create an array of entity types
-		List<Class> entityClasses =new ArrayList<>();
-		
-		//get the entity typs for the entities
-		
+
+		// get a list of all entity classes from entity manager
+
+		Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
+
+		// create an array of entity types
+		List<Class> entityClasses = new ArrayList<>();
+
+		// get the entity typs for the entities
+
+		for (EntityType tempEntityType : entities) {
+			entityClasses.add(tempEntityType.getJavaType());
+		}
+
+		// expose the entity ids for the array of entity/domain types
+
+		Class[] domainTypes = entityClasses.toArray(new Class[0]);
+		config.exposeIdsFor(domainTypes);
+
 	}
 }
